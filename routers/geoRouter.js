@@ -22,7 +22,7 @@ router.post("/remark", authorized, async (req, res) => {
             {
                 userref: userid,
                 remark,
-                timestamp
+                timestamp: timestamp*1000
             }
         )
         if ( remarkObj == null ) throw "Could not register remark"
@@ -56,15 +56,15 @@ router.post("/punch", authorized, async (req, res) => {
                 lat: e.latitude,
                 long: e.longitude,
                 status: e.status,
-                timestamp: e.timestamp
+                timestamp: e.timestamp*1000
             })
         });
 
         let punchObj = await Punch.create(
             {
                 userref: userid,
-                punchin: punchin,
-                punchout: punchout,
+                punchin: punchin*1000,
+                punchout: punchout*1000,
                 points: filteredPoints
             }
         )

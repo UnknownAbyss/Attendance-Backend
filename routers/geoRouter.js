@@ -28,8 +28,6 @@ router.post("/remark", authorized, async (req, res) => {
         if ( remarkObj == null ) throw "Could not register remark"
 
         res.status(200).json({})
-
-        recalculatePaths()
     } catch (e) {
         // Error
         console.log(e)

@@ -1,5 +1,6 @@
 const express = require("express");
 const bodyparser = require("body-parser")
+var cors = require('cors');
 const authRouter = require("./routers/authRouter");
 const geoRouter = require("./routers/geoRouter")
 
@@ -13,6 +14,7 @@ const app = express();
 // -----------
 // MiddleWare
 // -----------
+app.use(cors());
 app.use(bodyparser.urlencoded({ extended: false }))
 app.use(bodyparser.json())
 app.use("/auth", authRouter);

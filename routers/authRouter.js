@@ -2,7 +2,10 @@ const express = require("express");
 const router = express.Router();
 
 // ModelS
-const { User } = require('../models/users')
+const { User } = require('../models/users');
+const admin = require("../middleware/admin");
+const { Punch } = require("../models/punch");
+const { Remark } = require("../models/remark");
 
 // PING
 router.get("/", (req, res) => res.status(200).send("/auth: pong"));
@@ -37,7 +40,7 @@ router.post("/verify", async (req, res) => {
 // RESPONSE:  name
 // Create a new User
 // -----------
-router.post("/create", async (req, res) => {
+router.post("/create", admin, async (req, res) => {
 
   try {
     // UserID/Name provided?
@@ -64,7 +67,7 @@ router.post("/create", async (req, res) => {
 // RESPONSE:  name
 // Delete a User
 // -----------
-router.post("/delete", async (req, res) => {
+router.post("/delete", admin, async (req, res) => {
 
   try {
     // UserID provided?
@@ -73,10 +76,55 @@ router.post("/delete", async (req, res) => {
 
     const deletedObj = await User.findOneAndDelete({ userid });
     if (!deletedObj) throw "Object doesn't exist"
+    
+    await Punch.deleteMany({ userid })
+    await Remark.deleteMany({ userid })
 
     return res.status(200).json({ name: deletedObj.name });
   } catch (e) {
     // Error
+    return res.status(500).json({err: `${e}`});
+  }
+})
+
+// -----------
+// POST:      admin
+// RESPONSE:  list of accounts
+// Delete a User
+// -----------
+router.post("/accounts", admin, async (req, res) => {
+  try {
+    const users = await User.find()
+    if (!users) throw "Database Error"
+
+    return res.status(200).json({
+      users: users
+    })
+  } catch (e) {
+    // Error
+    return res.status(500).json({err: `${e}`});
+  }
+})
+
+// -----------
+// POST:      admin
+// RESPONSE:  unused_id
+// Delete a User
+// -----------
+router.post("/requestid", admin, async (req, res) => {
+  try {
+    let id = 0
+    while (true) {
+      id = Math.floor(100000 + Math.random() * 900000)
+      if (await User.exists({ userid: id }) == null) break
+    }
+
+    return res.status(200).json({
+      id: id
+    })
+  } catch (e) {
+    // Error
+    console.log(e)
     return res.status(500).json({err: `${e}`});
   }
 })

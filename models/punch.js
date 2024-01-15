@@ -3,7 +3,6 @@ const mongoose = require('mongoose')
 const punchSchema = new mongoose.Schema({
     userref: {
         type: String,
-        unique: true,
         required: true
     },
     punchin: {
@@ -17,6 +16,10 @@ const punchSchema = new mongoose.Schema({
     distance: {
         type: Number,
         default: 0.0
+    },
+    polyline: {
+        type: String,
+        default: ""
     },
     points: [
         {

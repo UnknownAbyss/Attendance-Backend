@@ -3,6 +3,7 @@ const bodyparser = require("body-parser")
 var cors = require('cors');
 const authRouter = require("./routers/authRouter");
 const geoRouter = require("./routers/geoRouter")
+const infoRouter = require("./routers/infoRouter")
 
 console.clear();
 
@@ -19,6 +20,7 @@ app.use(bodyparser.urlencoded({ extended: false }))
 app.use(bodyparser.json())
 app.use("/auth", authRouter);
 app.use("/geo", geoRouter);
+app.use("/info", infoRouter);
 
 // -----------
 // Catch-all Routes

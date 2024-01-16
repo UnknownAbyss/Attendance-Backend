@@ -21,7 +21,7 @@ router.post("/summary", admin, async (req, res) => {
     let data = await User.aggregate([
       {
         $lookup: {
-          from: Punch.collection.collectionName, // Use the actual name of the punches collection
+          from: Punch.collection.collectionName,
           let: { userId: "$userid" },
           pipeline: [
             {
@@ -50,7 +50,8 @@ router.post("/summary", admin, async (req, res) => {
               _id: "$userid",
               userName: { $first: "$name" },
               globalStartTime: { $min: "$punches.punchin" },
-              globalEndTime: { $max: "$punches.punchout" }
+              globalEndTime: { $max: "$punches.punchout" },
+              totalDistance: { $sum: "$punches.distance" }
           }
       },
       {
@@ -59,7 +60,8 @@ router.post("/summary", admin, async (req, res) => {
               userId: "$_id",
               userName: 1,
               globalStartTime: 1,
-              globalEndTime: 1
+              globalEndTime: 1,
+              totalDistance: 1
           }
       }
     ]);

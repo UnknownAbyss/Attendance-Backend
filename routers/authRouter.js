@@ -10,6 +10,11 @@ const { Remark } = require("../models/remark");
 // PING
 router.get("/", (req, res) => res.status(200).send("/auth: pong"));
 
+// Admin Login
+router.post("/admin", admin, async (req, res) => {
+  return res.status(200).json({});
+})
+
 // -----------
 // POST:      userid
 // RESPONSE:  name

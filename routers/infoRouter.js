@@ -5,7 +5,32 @@ const router = express.Router();
 const { Punch } = require("../models/punch");
 const { User } = require("../models/users");
 const admin = require("../middleware/admin");
+const { Remark } = require("../models/remark");
 
+router.post("/datedremarks", admin, async (req, res) => {
+  try {
+    const date = req.body?.date;
+    if (!date) throw "No Date provided";
+
+    const startDate = new Date(date);
+    startDate.setUTCHours(0, 0, 0, 0);
+    const endDate = new Date(date);
+    endDate.setUTCHours(23, 59, 59, 999);
+
+    let data = await Remark.find({
+      timestamp: {
+        $gte: startDate,
+        $lte: endDate
+      }
+    })
+
+    return res.status(200).json({ data });
+  } catch (e) {
+    // Error
+    console.log(e);
+    return res.status(500).json({ err: `${e}` });
+  }
+});
 
 // Route to get All User summary per day
 router.post("/summary", admin, async (req, res) => {
@@ -37,36 +62,35 @@ router.post("/summary", admin, async (req, res) => {
             },
           ],
           as: "punches",
+          i,
         },
       },
       {
-          $unwind: {
-              path: "$punches",
-              preserveNullAndEmptyArrays: true
-          }
+        $unwind: {
+          path: "$punches",
+          preserveNullAndEmptyArrays: true,
+        },
       },
       {
-          $group: {
-              _id: "$userid",
-              userName: { $first: "$name" },
-              globalStartTime: { $min: "$punches.punchin" },
-              globalEndTime: { $max: "$punches.punchout" },
-              totalDistance: { $sum: "$punches.distance" }
-          }
+        $group: {
+          _id: "$userid",
+          userName: { $first: "$name" },
+          globalStartTime: { $min: "$punches.punchin" },
+          globalEndTime: { $max: "$punches.punchout" },
+          totalDistance: { $sum: "$punches.distance" },
+        },
       },
       {
-          $project: {
-              _id: 0,
-              userId: "$_id",
-              userName: 1,
-              globalStartTime: 1,
-              globalEndTime: 1,
-              totalDistance: 1
-          }
-      }
+        $project: {
+          _id: 0,
+          userId: "$_id",
+          userName: 1,
+          globalStartTime: 1,
+          globalEndTime: 1,
+          totalDistance: 1,
+        },
+      },
     ]);
-
-    console.log(data);
 
     return res.status(200).json({ data });
   } catch (e) {

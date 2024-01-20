@@ -35,6 +35,7 @@ router.post("/verify", async (req, res) => {
     return res.status(200).json({name: userObj.name});
   } catch (e) {
     // Error
+    console.log(e)
     return res.status(500).json({err: `${e}`});
   }
 
@@ -63,6 +64,7 @@ router.post("/create", admin, async (req, res) => {
     return res.status(200).json({ name: newUserObj.name });
   } catch (e) {
     // Error
+    console.log(e)
     return res.status(500).json({err: `${e}`});
   }
 })
@@ -88,6 +90,7 @@ router.post("/delete", admin, async (req, res) => {
     return res.status(200).json({ name: deletedObj.name });
   } catch (e) {
     // Error
+    console.log(e)
     return res.status(500).json({err: `${e}`});
   }
 })
@@ -107,6 +110,7 @@ router.post("/accounts", admin, async (req, res) => {
     })
   } catch (e) {
     // Error
+    console.log(e)
     return res.status(500).json({err: `${e}`});
   }
 })

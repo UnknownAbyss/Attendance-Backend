@@ -47,9 +47,7 @@ router.post("/punch", authorized, async (req, res) => {
             throw "Some data not provided"
 
         let filteredPoints = []
-        console.log(req.body)
         points.forEach(e => {
-            console.log(e)
             filteredPoints.push({
                 lat: e.latitude,
                 long: e.longitude,

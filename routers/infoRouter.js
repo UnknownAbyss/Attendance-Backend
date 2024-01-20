@@ -40,7 +40,7 @@ router.post("/datedremarks", admin, async (req, res) => {
       {
         $project: {
           timestamp: 1,
-          name: "$user.username",
+          name: "$user.name",
           remark: 1,
         },
       },

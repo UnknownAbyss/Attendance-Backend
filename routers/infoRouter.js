@@ -17,12 +17,34 @@ router.post("/datedremarks", admin, async (req, res) => {
     const endDate = new Date(date);
     endDate.setUTCHours(23, 59, 59, 999);
 
-    let data = await Remark.find({
-      timestamp: {
-        $gte: startDate,
-        $lte: endDate
-      }
-    })
+    let data = await Remark.aggregate([
+      {
+        $match: {
+          timestamp: {
+            $gte: startDate,
+            $lte: endDate,
+          },
+        },
+      },
+      {
+        $lookup: {
+          from: User.collection.collectionName,
+          localField: "userref",
+          foreignField: "userid",
+          as: "user",
+        },
+      },
+      {
+        $unwind: "$user",
+      },
+      {
+        $project: {
+          timestamp: 1,
+          name: "$user.username",
+          remark: 1,
+        },
+      },
+    ]);
 
     return res.status(200).json({ data });
   } catch (e) {

@@ -62,7 +62,6 @@ router.post("/summary", admin, async (req, res) => {
             },
           ],
           as: "punches",
-          i,
         },
       },
       {

@@ -28,8 +28,20 @@ router.post("/dateduser", async (req, res) => {
         },
       },
       {
+        $lookup: {
+            from: User.collection.collectionName,
+            localField: "userref",
+            foreignField: "userid",
+            as: "user"
+        }
+    },
+    {
+        $unwind: "$user"
+    },
+      {
         $group: {
           _id: "$userref",
+          user: { $first: "$user.name" },
           punches: {
             $push: {
               distance: "$distance",
@@ -48,7 +60,8 @@ router.post("/dateduser", async (req, res) => {
         $project: {
           _id: 0,
           userId: "$_id",
-          punches: 1,
+          user: 1,
+          punches: 1, 
           totalDistance: 1,
           globalStartTime: 1,
           globalEndTime: 1,

@@ -7,7 +7,7 @@ const { User } = require("../models/users");
 const admin = require("../middleware/admin");
 const { Remark } = require("../models/remark");
 
-router.post("/dateduser", async (req, res) => {
+router.post("/dateduser", admin, async (req, res) => {
   try {
     const { userid, date } = req.body;
     if (!(userid && date)) throw "Some data not provided";

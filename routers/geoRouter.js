@@ -51,7 +51,7 @@ router.post("/punch", authorized, async (req, res) => {
             filteredPoints.push({
                 lat: e.latitude,
                 long: e.longitude,
-                status: e.status,
+                status: e.status==3,
                 timestamp: e.timestamp*1000
             })
         });
